@@ -1,27 +1,47 @@
 pipeline {
     agent any
 
+    environment {
+        registry = 'ivanvolvenko'
+        imageName = 'vue-paper-dashboard'
+        dockerImage = "${registry}/${imageName}"
+        dockerhubToken = 'dckr_pat_NsgGVfx8v9BKtX56fnp0xUNb6H8'
+    }
+
     stages {
-        stage('Cloning our GIT project') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/DarciaIV/vue-paper-dashboard'
+                script {
+                    checkout scm
+                }
             }
         }
-        stage('Preparing dependencies') {
+
+        stage('Build') {
             steps {
-                sh 'ls -l'
-                sh 'npm install'
+                script {
+                    sh "docker build -t ${dockerImage} ."
+                }
             }
         }
-        stage('Build project') {
+
+        stage('Push to DockerHub') {
             steps {
-                sh 'npm run build'
+                script {
+                    sh "docker login -u ${registry} -p ${dockerhubToken}"
+                    sh "docker push ${dockerImage}"
+                }
             }
         }
-        stage('Archive the artifact') {
+
+        stage('Deploy') {
             steps {
-                sh 'sudo zip -r dist dist/'
+                script {
+                    sh "docker-compose down"
+                    sh "docker-compose up -d --build"
+                }
             }
         }
     }
 }
+

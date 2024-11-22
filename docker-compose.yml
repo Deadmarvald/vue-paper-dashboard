@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  vue-app:
+    build:
+      context: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    command: npm run serve
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - vue-app
+
