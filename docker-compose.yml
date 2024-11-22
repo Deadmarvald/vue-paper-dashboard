@@ -13,7 +13,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/default.conf
+      - /var/jenkins_home/workspace/VueJS/nginx/default.conf
     depends_on:
       - vue-app
 
