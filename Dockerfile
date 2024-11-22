@@ -17,7 +17,7 @@ RUN npm cache clean --force && npm install
 COPY . .
 
 # Expose the port your app runs on
-EXPOSE 80  
+EXPOSE 8080  
 
 # Command to run your VueJS application
 CMD ["npm", "run", "serve"]
